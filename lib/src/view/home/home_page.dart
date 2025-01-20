@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/model/coffee_image.dart';
-import 'bloc/background_cubit.dart';
-import 'bloc/favorite_count_cubit.dart';
+import 'cubits/background_cubit.dart';
+import 'cubits/favorite_count_cubit.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});

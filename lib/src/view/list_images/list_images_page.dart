@@ -28,27 +28,6 @@ class _ListImagesBody extends StatefulWidget {
 class _ListImagesBodyState extends State<_ListImagesBody> {
   bool isGridView = false;
 
-  late final PageController _pageController;
-  double _currentPage = 5000000;
-  final value = 10000000;
-  final midleValue = 5000000;
-  late final ValueNotifier<double> controller =
-      ValueNotifier<double>(midleValue * 1.0);
-
-  final ValueNotifier<double> valueController = ValueNotifier<double>(0);
-
-  @override
-  void initState() {
-    super.initState();
-    _pageController =
-        PageController(initialPage: midleValue, viewportFraction: .8);
-    _pageController.addListener(() {
-      setState(() {
-        _currentPage = _pageController.page!;
-      });
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -105,41 +84,7 @@ class _ListImagesBodyState extends State<_ListImagesBody> {
                   child: SizedBox(
                     height: 400,
                     width: MediaQuery.sizeOf(context).width,
-                    child: PageView.builder(
-                      scrollBehavior: AppScrollBehavior(),
-                      clipBehavior: Clip.none,
-                      itemCount: value,
-                      controller: _pageController,
-                      itemBuilder: (context, index) {
-                        return ValueListenableBuilder(
-                            valueListenable: valueController,
-                            builder: (context, value, child) {
-                              final image = images[index % images.length];
-
-                              return AnimatedBuilder(
-                                animation: controller,
-                                builder: (context, child) {
-                                  return child!;
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.all(4.0),
-                                  child: InkWell(
-                                    onTap: () {
-                                      Navigator.pushNamed(
-                                        context,
-                                        '/image_details',
-                                        arguments: image,
-                                      );
-                                    },
-                                    child: BlendCardImage(
-                                      bytecode: image.fileEncoded,
-                                    ),
-                                  ),
-                                ),
-                              );
-                            });
-                      },
-                    ),
+                    child: _PageView(images: images),
                   ),
                 );
         },
@@ -154,4 +99,77 @@ class AppScrollBehavior extends MaterialScrollBehavior {
         PointerDeviceKind.touch,
         PointerDeviceKind.mouse,
       };
+}
+
+class _PageView extends StatefulWidget {
+  final List<CoffeeImage> images;
+  const _PageView({required this.images});
+
+  @override
+  State<_PageView> createState() => __PageViewState();
+}
+
+class __PageViewState extends State<_PageView> {
+  late final PageController _pageController;
+  double _currentPage = 5000000;
+  final value = 10000000;
+  final midleValue = 5000000;
+  late final ValueNotifier<double> controller =
+      ValueNotifier<double>(midleValue * 1.0);
+
+  final ValueNotifier<double> valueController = ValueNotifier<double>(0);
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController =
+        PageController(initialPage: midleValue, viewportFraction: .7);
+    _pageController.addListener(() {
+      setState(() {
+        _currentPage = _pageController.page!;
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return PageView.builder(
+      scrollBehavior: AppScrollBehavior(),
+      clipBehavior: Clip.none,
+      itemCount: value,
+      controller: _pageController,
+      itemBuilder: (context, index) {
+        return ValueListenableBuilder(
+            valueListenable: valueController,
+            builder: (context, value, child) {
+              final image = widget.images[index % widget.images.length];
+
+              return AnimatedBuilder(
+                animation: controller,
+                builder: (context, child) {
+                  return Transform(
+                    alignment: Alignment.center,
+                    transform: Matrix4.identity()
+                      ..setEntry(3, 2, 0.001)
+                      ..scale(1 - 0.2 * (index - _currentPage).abs()),
+                    child: child!,
+                  );
+                },
+                child: InkWell(
+                  onTap: () {
+                    Navigator.pushNamed(
+                      context,
+                      '/image_details',
+                      arguments: image,
+                    );
+                  },
+                  child: BlendCardImage(
+                    bytecode: image.fileEncoded,
+                  ),
+                ),
+              );
+            });
+      },
+    );
+  }
 }
