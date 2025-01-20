@@ -1,16 +1,31 @@
 import 'package:blend/blend.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:very_good_coffee/src/domain/model/coffee_image.dart';
+import 'package:very_good_coffee/src/view/list_images/cubit/list_images_cubit.dart';
 
-import '../../domain/model/coffee_image.dart';
-
-class ListImagesPage extends StatefulWidget {
+class ListImagesPage extends StatelessWidget {
   const ListImagesPage({super.key});
 
   @override
-  State<ListImagesPage> createState() => _ListImagesPageState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) =>
+          ListImagesCubit(context.read())..loadFavoritedCoffee(),
+      child: const _ListImagesBody(),
+    );
+  }
 }
 
-class _ListImagesPageState extends State<ListImagesPage> {
+class _ListImagesBody extends StatefulWidget {
+  const _ListImagesBody();
+
+  @override
+  State<_ListImagesBody> createState() => _ListImagesBodyState();
+}
+
+class _ListImagesBodyState extends State<_ListImagesBody> {
   bool isGridView = false;
 
   late final PageController _pageController;
@@ -21,10 +36,6 @@ class _ListImagesPageState extends State<ListImagesPage> {
       ValueNotifier<double>(midleValue * 1.0);
 
   final ValueNotifier<double> valueController = ValueNotifier<double>(0);
-
-  final images = <CoffeeImage> [
-    
-  ];
 
   @override
   void initState() {
@@ -55,70 +66,92 @@ class _ListImagesPageState extends State<ListImagesPage> {
             ? const Icon(Icons.width_full_outlined)
             : const Icon(Icons.grid_view),
       ),
-      body: isGridView
-          ? GridView.builder(
-              itemCount: images.length,
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 32.0),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 4,
-                childAspectRatio: 1,
-                mainAxisSpacing: 8,
-                crossAxisSpacing: 8,
-              ),
-              itemBuilder: (context, index) {
-                return InkWell(
-                  onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      '/image_details',
-                      arguments: images[index],
+      body: BlocBuilder<ListImagesCubit, List<CoffeeImage>?>(
+        builder: (context, images) {
+          if (images == null) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (images.isEmpty) {
+            return const Center(child: Text('No images found'));
+          }
+
+          return isGridView
+              ? GridView.builder(
+                  itemCount: images.length,
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 48.0),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 4,
+                    childAspectRatio: 1,
+                    mainAxisSpacing: 8,
+                    crossAxisSpacing: 8,
+                  ),
+                  itemBuilder: (context, index) {
+                    return InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          '/image_details',
+                          arguments: images[index],
+                        );
+                      },
+                      child: BlendCardImage(
+                        bytecode: images[index % images.length].fileEncoded,
+                      ),
                     );
-                  },
-                  child: BlendCardImage(
-                    bytecode: images[index % images.length].bytecode,
+                  })
+              : Center(
+                  child: SizedBox(
+                    height: 400,
+                    width: MediaQuery.sizeOf(context).width,
+                    child: PageView.builder(
+                      scrollBehavior: AppScrollBehavior(),
+                      clipBehavior: Clip.none,
+                      itemCount: value,
+                      controller: _pageController,
+                      itemBuilder: (context, index) {
+                        return ValueListenableBuilder(
+                            valueListenable: valueController,
+                            builder: (context, value, child) {
+                              final image = images[index % images.length];
+
+                              return AnimatedBuilder(
+                                animation: controller,
+                                builder: (context, child) {
+                                  return child!;
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(4.0),
+                                  child: InkWell(
+                                    onTap: () {
+                                      Navigator.pushNamed(
+                                        context,
+                                        '/image_details',
+                                        arguments: image,
+                                      );
+                                    },
+                                    child: BlendCardImage(
+                                      bytecode: image.fileEncoded,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            });
+                      },
+                    ),
                   ),
                 );
-              })
-          : Container(
-              margin: const EdgeInsets.symmetric(vertical: 32.0),
-              height: 400,
-              width: MediaQuery.sizeOf(context).width,
-              child: PageView.builder(
-                clipBehavior: Clip.none,
-                itemCount: value,
-                controller: _pageController,
-                itemBuilder: (context, index) {
-                  return ValueListenableBuilder(
-                      valueListenable: valueController,
-                      builder: (context, value, child) {
-                        final image = images[index % images.length];
-
-                        return AnimatedBuilder(
-                          animation: controller,
-                          builder: (context, child) {
-                            return child!;
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: InkWell(
-                              onTap: () {
-                                Navigator.pushNamed(
-                                  context,
-                                  '/image_details',
-                                  arguments: image,
-                                );
-                              },
-                              child: BlendCardImage(
-                                bytecode: image.bytecode,
-                              ),
-                            ),
-                          ),
-                        );
-                      });
-                },
-              ),
-            ),
+        },
+      ),
     );
   }
+}
+
+class AppScrollBehavior extends MaterialScrollBehavior {
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+      };
 }

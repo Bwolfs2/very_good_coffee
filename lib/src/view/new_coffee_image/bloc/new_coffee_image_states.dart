@@ -11,3 +11,9 @@ class NewCoffeeImageLoaded extends NewCoffeeImageState {
 
   NewCoffeeImageLoaded(this.image);
 }
+
+class NewCoffeeImageFavorited extends NewCoffeeImageState {
+  final CoffeeImage image;
+
+  NewCoffeeImageFavorited(this.image);
+}

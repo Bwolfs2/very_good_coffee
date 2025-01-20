@@ -2,6 +2,7 @@ import 'package:blend/blend.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:very_good_coffee/src/domain/repoistories/coffee_api_repository.dart';
+import 'package:very_good_coffee/src/domain/repoistories/coffee_local_data_repository.dart';
 import 'package:very_good_coffee/src/view/new_coffee_image/bloc/new_coffee_image_bloc.dart';
 import 'package:very_good_coffee/src/view/new_coffee_image/bloc/new_coffee_image_events.dart';
 
@@ -15,6 +16,7 @@ class NewCoffeeImagePage extends StatelessWidget {
     return BlocProvider(
       create: (context) => NewCoffeeImageBloc(
         context.read<CoffeeApiRepository>(),
+        context.read<CoffeeLocalDataRepository>(),
       )..add(LoadNewCoffeeImageEvent()),
       child: const _NewCoffeeImageBody(),
     );
@@ -36,28 +38,57 @@ class _NewCoffeeImageBodyState extends State<_NewCoffeeImageBody> {
         title: const Text('New Coffee Image'),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          context.read<NewCoffeeImageBloc>().add(LoadNewCoffeeImageEvent());
+        },
         child: const Icon(Icons.refresh),
       ),
-      body: BlocBuilder<NewCoffeeImageBloc, NewCoffeeImageState>(
+      body: BlocConsumer<NewCoffeeImageBloc, NewCoffeeImageState>(
+        listener: (context, state) {
+          if (state is NewCoffeeImageFavorited) {
+            Navigator.of(context).pop();
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Coffee image favorited saved!'),
+              ),
+            );
+          }
+        },
         builder: (context, state) {
           return switch (state) {
             NewCoffeeImageInitial() || NewCoffeeImageLoading() => const Center(
                 child: CircularProgressIndicator(),
               ),
-            NewCoffeeImageLoaded(image: final image) => Column(
+            NewCoffeeImageLoaded(image: final image) ||
+            NewCoffeeImageFavorited(image: final image) =>
+              Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: BlendCardImage(
-                      bytecode: image.bytecode,
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: BlendCardImage(
+                        bytecode: image.fileEncoded,
+                      ),
                     ),
                   ),
-                  FilledButton(
-                    onPressed: () {},
-                    child: const Text('Favorite'),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Center(
+                          child: FilledButton(
+                            onPressed: () {
+                              context.read<NewCoffeeImageBloc>().add(
+                                    FavoriteNewCoffeeImageEvent(image),
+                                  );
+                            },
+                            child: const Text('Favorite'),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
+                  const SizedBox(height: 16),
                 ],
               )
           };

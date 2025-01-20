@@ -1,14 +1,18 @@
+import 'package:drift_local_data_impl/drift_local_data_impl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart';
+import 'package:local_data_abstractions/local_data_abstractions.dart';
 import 'package:very_good_coffee/core/http_client.dart';
+import 'package:very_good_coffee/src/domain/repoistories/coffee_local_data_repository.dart';
+import 'package:very_good_coffee/src/view/list_images/list_images_page.dart';
 
+import 'src/data/repositories/coffee_local_data_repository_impl.dart';
 import 'src/data/repositories/coffee_repository_impl.dart';
 import 'src/domain/model/coffee_image.dart';
 import 'src/domain/repoistories/coffee_api_repository.dart';
 import 'src/view/home/home_page.dart';
 import 'src/view/image_details/image_details_page.dart';
-import 'src/view/list_images/list_images_page.dart';
 import 'src/view/new_coffee_image/new_coffee_image_page.dart';
 
 void main() {
@@ -22,12 +26,20 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
+        RepositoryProvider<CoffeeLocalDataSource>(
+          create: (context) => CoffeeDataSourceDriftImpl(),
+        ),
         RepositoryProvider<IHttpClient>(
           create: (context) => HttpClientImpl(httpClient: Client()),
         ),
         RepositoryProvider<CoffeeApiRepository>(
           create: (context) => CoffeeApiRepositoryImpl(
             httpClient: context.read<IHttpClient>(),
+          ),
+        ),
+        RepositoryProvider<CoffeeLocalDataRepository>(
+          create: (context) => CoffeeLocalDataRepositoryImpl(
+            context.read<CoffeeLocalDataSource>(),
           ),
         ),
       ],

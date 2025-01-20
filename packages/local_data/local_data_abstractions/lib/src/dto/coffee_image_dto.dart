@@ -1,10 +1,10 @@
-import 'package:flutter/foundation.dart';
+import 'dart:typed_data';
 
-class CoffeeImage {
+class CoffeeImageDto {
   final String id;
   final Uint8List fileEncoded;
 
-  const CoffeeImage({
+  CoffeeImageDto({
     required this.id,
     required this.fileEncoded,
   });

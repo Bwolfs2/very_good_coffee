@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../core/http_client.dart';
 import '../../domain/model/coffee_image.dart';
@@ -21,11 +23,19 @@ class CoffeeApiRepositoryImpl implements CoffeeApiRepository {
 
     final bytecode = await getBytecodeFromUrl(json['file']);
 
-    return CoffeeImage(bytecode: bytecode, generatedAt: DateTime.now());
+    return CoffeeImage(
+      id: const Uuid().v4(),
+      fileEncoded: bytecode,
+    );
   }
 
   Future<Uint8List> getBytecodeFromUrl(String url) async {
-    final response = await _httpClient.get(url);
-    return base64Decode(response.data);
+    try {
+      final response = await _httpClient.getBytecode(url);
+      log(response.toString());
+      return response.data;
+    } catch (e) {
+      throw Exception('Failed to get bytecode from url: $e');
+    }
   }
 }
