@@ -17,7 +17,6 @@ class ImageDetailsBloc extends Bloc<ImageDetailsEvent, ImageDetailsState> {
     });
 
     on<ImageDetailsSetAsBackgroundEvent>((event, emit) async {
-      emit(ImageDetailsLoading());
       await _coffeeLocalDataRepository.setBackgroundCoffee(event.image);
       emit(ImageDetailsSetAsBackground(
         event.image,
@@ -25,7 +24,6 @@ class ImageDetailsBloc extends Bloc<ImageDetailsEvent, ImageDetailsState> {
     });
 
     on<ImageDetailsRemoveFromFavoritesEvent>((event, emit) async {
-      emit(ImageDetailsLoading());
       await _coffeeLocalDataRepository.deleteFavoriteCoffee(event.image);
       emit(ImageDetailsRemoveFromFavorites(
         event.image,

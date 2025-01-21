@@ -22,7 +22,7 @@ class NewCoffeeImageBloc
       final image = event.image;
       await _coffeeLocalRepository.saveFavoriteCoffee(image);
 
-      emit(NewCoffeeImageFavorited(image));
+      emit(NewCoffeeImageFavorited());
     });
   }
 }

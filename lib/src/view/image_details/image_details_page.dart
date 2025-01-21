@@ -120,21 +120,26 @@ class _ImageDetailsPageState extends State<_ImageDetailsPage> {
             Navigator.pop(context);
           }
         },
+        buildWhen: (previous, current) =>
+            current is! ImageDetailsSetAsBackground &&
+            current is! ImageDetailsRemoveFromFavorites,
         builder: (context, state) {
-          return switch (state) {
-            ImageDetailsInitial() || ImageDetailsLoading() => const Center(
-                child: CircularProgressIndicator(),
-              ),
-            ImageDetailsLoaded(image: final image) ||
-            ImageDetailsSetAsBackground(image: final image) ||
-            ImageDetailsRemoveFromFavorites(image: final image) =>
-              Container(
-                padding: const EdgeInsets.all(32.0),
-                width: MediaQuery.sizeOf(context).width,
-                height: MediaQuery.sizeOf(context).height,
-                child: BlendCardImage(bytecode: image.fileEncoded),
-              )
-          };
+          if (state is ImageDetailsInitial || state is ImageDetailsLoading) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          if (state is ImageDetailsLoaded) {
+            return Container(
+              padding: const EdgeInsets.all(32.0),
+              width: MediaQuery.sizeOf(context).width,
+              height: MediaQuery.sizeOf(context).height,
+              child: BlendCardImage(bytecode: state.image.fileEncoded),
+            );
+          }
+
+          return const SizedBox.shrink();
         },
       ),
     );

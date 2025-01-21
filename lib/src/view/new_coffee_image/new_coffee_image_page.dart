@@ -42,59 +42,61 @@ class _NewCoffeeImageBodyState extends State<_NewCoffeeImageBody> {
       floatingActionButton:
           BlocBuilder<NewCoffeeImageBloc, NewCoffeeImageState>(
         builder: (context, state) {
-          return switch (state) {
-            NewCoffeeImageInitial() ||
-            NewCoffeeImageLoading() =>
-              const SizedBox.shrink(),
-            NewCoffeeImageLoaded(image: final image) ||
-            NewCoffeeImageFavorited(image: final image) =>
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Animate(
-                    effects: [
-                      ScaleEffect(
-                        delay: 350.milliseconds,
-                        begin: Offset(0.0, 0.0),
-                        end: Offset(1.0, 1.0),
-                      ),
-                    ],
-                    child: FloatingActionButton(
-                      tooltip: 'Get new coffee image',
-                      onPressed: () {
-                        context
-                            .read<NewCoffeeImageBloc>()
-                            .add(LoadNewCoffeeImageEvent());
-                      },
-                      child: const Icon(Icons.refresh),
+          if (state is NewCoffeeImageInitial ||
+              state is NewCoffeeImageLoading) {
+            return const SizedBox.shrink();
+          }
+
+          if (state is NewCoffeeImageLoaded) {
+            return Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Animate(
+                  effects: [
+                    ScaleEffect(
+                      delay: 350.milliseconds,
+                      begin: Offset(0.0, 0.0),
+                      end: Offset(1.0, 1.0),
+                    ),
+                  ],
+                  child: FloatingActionButton(
+                    tooltip: 'Get new coffee image',
+                    onPressed: () {
+                      context
+                          .read<NewCoffeeImageBloc>()
+                          .add(LoadNewCoffeeImageEvent());
+                    },
+                    child: const Icon(Icons.refresh),
+                  ),
+                ),
+                const SizedBox(width: 32),
+                Animate(
+                  effects: [
+                    ScaleEffect(
+                      delay: 350.milliseconds,
+                      begin: Offset(0.0, 0.0),
+                      end: Offset(1.0, 1.0),
+                    ),
+                  ],
+                  child: FloatingActionButton(
+                    heroTag: 'favorite',
+                    tooltip: 'Favorite',
+                    onPressed: () {
+                      context.read<NewCoffeeImageBloc>().add(
+                            FavoriteNewCoffeeImageEvent(state.image),
+                          );
+                    },
+                    child: const Icon(
+                      Icons.favorite,
+                      color: Colors.red,
                     ),
                   ),
-                  const SizedBox(width: 32),
-                  Animate(
-                    effects: [
-                      ScaleEffect(
-                        delay: 350.milliseconds,
-                        begin: Offset(0.0, 0.0),
-                        end: Offset(1.0, 1.0),
-                      ),
-                    ],
-                    child: FloatingActionButton(
-                      heroTag: 'favorite',
-                      tooltip: 'Favorite',
-                      onPressed: () {
-                        context.read<NewCoffeeImageBloc>().add(
-                              FavoriteNewCoffeeImageEvent(image),
-                            );
-                      },
-                      child: const Icon(
-                        Icons.favorite,
-                        color: Colors.red,
-                      ),
-                    ),
-                  ),
-                ],
-              )
-          };
+                ),
+              ],
+            );
+          }
+
+          return const SizedBox.shrink();
         },
       ),
       body: BlocConsumer<NewCoffeeImageBloc, NewCoffeeImageState>(
@@ -108,32 +110,37 @@ class _NewCoffeeImageBodyState extends State<_NewCoffeeImageBody> {
             );
           }
         },
+        buildWhen: (previous, current) => current is! NewCoffeeImageFavorited,
         builder: (context, state) {
-          return switch (state) {
-            NewCoffeeImageInitial() || NewCoffeeImageLoading() => const Center(
-                child: CircularProgressIndicator(),
-              ),
-            NewCoffeeImageLoaded(image: final image) ||
-            NewCoffeeImageFavorited(image: final image) =>
-              SizedBox(
-                width: MediaQuery.sizeOf(context).width,
-                height: MediaQuery.sizeOf(context).height,
-                child: Animate(
-                  effects: [
-                    FlipEffect(
-                      duration: 300.milliseconds,
-                      direction: Axis.horizontal,
-                    ),
-                  ],
-                  child: Padding(
-                    padding: EdgeInsets.all(32.0),
-                    child: BlendCardImage(
-                      bytecode: image.fileEncoded,
-                    ),
+          if (state is NewCoffeeImageInitial ||
+              state is NewCoffeeImageLoading) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          if (state is NewCoffeeImageLoaded) {
+            return SizedBox(
+              width: MediaQuery.sizeOf(context).width,
+              height: MediaQuery.sizeOf(context).height,
+              child: Animate(
+                effects: [
+                  FlipEffect(
+                    duration: 300.milliseconds,
+                    direction: Axis.horizontal,
+                  ),
+                ],
+                child: Padding(
+                  padding: EdgeInsets.all(32.0),
+                  child: BlendCardImage(
+                    bytecode: state.image.fileEncoded,
                   ),
                 ),
-              )
-          };
+              ),
+            );
+          }
+
+          return const SizedBox.shrink();
         },
       ),
     );

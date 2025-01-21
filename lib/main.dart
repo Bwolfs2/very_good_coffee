@@ -2,9 +2,11 @@ import 'package:core/core.dart';
 import 'package:drift_local_data_impl/drift_local_data_impl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:local_data_abstractions/local_data_abstractions.dart';
 import 'package:very_good_coffee/src/domain/repoistories/coffee_local_data_repository.dart';
 import 'package:very_good_coffee/src/view/list_images/list_images_page.dart';
+import 'package:very_good_coffee/src/view/splash/splash_page.dart';
 
 import 'src/data/repositories/coffee_local_data_repository_impl.dart';
 import 'src/data/repositories/coffee_repository_impl.dart';
@@ -15,6 +17,9 @@ import 'src/view/image_details/image_details_page.dart';
 import 'src/view/new_coffee_image/new_coffee_image_page.dart';
 
 void main() {
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+
   runApp(const MyApp());
 }
 
@@ -50,7 +55,8 @@ class MyApp extends StatelessWidget {
         ),
         initialRoute: '/',
         routes: {
-          '/': (context) => const HomePage(),
+          '/': (context) => const SplashPage(),
+          '/home': (context) => const HomePage(),
           '/new_coffee_image': (context) => const NewCoffeeImagePage(),
           '/list_images': (context) => ListImagesPage(),
           '/image_details': (context) => ImageDetailsPage(

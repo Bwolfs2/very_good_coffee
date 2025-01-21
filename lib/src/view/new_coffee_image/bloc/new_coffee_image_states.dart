@@ -1,19 +1,23 @@
 import '../../../domain/model/coffee_image.dart';
 
-sealed class NewCoffeeImageState {}
+sealed class NewCoffeeImageState {
+  const NewCoffeeImageState();
+}
 
-class NewCoffeeImageInitial extends NewCoffeeImageState {}
+class NewCoffeeImageInitial extends NewCoffeeImageState {
+  const NewCoffeeImageInitial();
+}
 
-class NewCoffeeImageLoading extends NewCoffeeImageState {}
+class NewCoffeeImageLoading extends NewCoffeeImageState {
+  const NewCoffeeImageLoading();
+}
 
 class NewCoffeeImageLoaded extends NewCoffeeImageState {
   final CoffeeImage image;
 
-  NewCoffeeImageLoaded(this.image);
+  const NewCoffeeImageLoaded(this.image);
 }
 
 class NewCoffeeImageFavorited extends NewCoffeeImageState {
-  final CoffeeImage image;
-
-  NewCoffeeImageFavorited(this.image);
+  const NewCoffeeImageFavorited();
 }
