@@ -88,6 +88,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.2"
+  core:
+    dependency: "direct main"
+    description:
+      path: "packages/core"
+      relative: true
+    source: path
+    version: "0.0.1"
   crypto:
     dependency: transitive
     description:
@@ -202,7 +209,7 @@ packages:
     source: sdk
     version: "0.0.0"
   http:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: http
       sha256: "5895291c13fa8a3bd82e76d5627f69e0d85ca6a30dcac95c4ea19a5d555879c2"

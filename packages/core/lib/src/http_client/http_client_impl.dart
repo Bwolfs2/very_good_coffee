@@ -3,10 +3,14 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart';
 
-class HttpClientImpl implements IHttpClient {
-  final Client _httpClient;
+import 'http_client.dart';
 
-  HttpClientImpl({required Client httpClient}) : _httpClient = httpClient;
+class HttpClientImpl implements IHttpClient {
+  late final Client _httpClient;
+
+  HttpClientImpl() {
+    _httpClient = Client();
+  }
 
   @override
   Future<HttpClientResponse<String>> get(String path,
@@ -43,32 +47,4 @@ class HttpClientImpl implements IHttpClient {
 
     throw Exception(response.body);
   }
-}
-
-abstract class IHttpClient {
-  Future<HttpClientResponse<String>> get(
-    String path, {
-    Map<String, String>? queryParameters,
-    Map<String, String>? headers,
-  });
-
-  Future<HttpClientResponse<Uint8List>> getBytecode(
-    String path, {
-    Map<String, String>? queryParameters,
-    Map<String, String>? headers,
-  });
-}
-
-class HttpClientResponse<T> {
-  final T data;
-
-  final int statusCode;
-
-  final String? statusMessage;
-
-  const HttpClientResponse({
-    required this.data,
-    required this.statusCode,
-    this.statusMessage,
-  });
 }

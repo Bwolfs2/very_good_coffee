@@ -1,9 +1,8 @@
+import 'package:core/core.dart';
 import 'package:drift_local_data_impl/drift_local_data_impl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:http/http.dart';
 import 'package:local_data_abstractions/local_data_abstractions.dart';
-import 'package:very_good_coffee/core/http_client.dart';
 import 'package:very_good_coffee/src/domain/repoistories/coffee_local_data_repository.dart';
 import 'package:very_good_coffee/src/view/list_images/list_images_page.dart';
 
@@ -30,7 +29,7 @@ class MyApp extends StatelessWidget {
           create: (context) => CoffeeDataSourceDriftImpl(),
         ),
         RepositoryProvider<IHttpClient>(
-          create: (context) => HttpClientImpl(httpClient: Client()),
+          create: (context) => HttpClientImpl(),
         ),
         RepositoryProvider<CoffeeApiRepository>(
           create: (context) => CoffeeApiRepositoryImpl(

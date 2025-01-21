@@ -156,12 +156,15 @@ class __PageViewState extends State<_PageView> {
                   );
                 },
                 child: InkWell(
-                  onTap: () {
-                    Navigator.pushNamed(
+                  onTap: () async {
+                    await Navigator.pushNamed(
                       context,
                       '/image_details',
                       arguments: image,
                     );
+                    if (context.mounted) {
+                      context.read<ListImagesCubit>().loadFavoritedCoffee();
+                    }
                   },
                   child: BlendCardImage(
                     bytecode: image.fileEncoded,

@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:core/core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../../core/http_client.dart';
 import '../../domain/model/coffee_image.dart';
 import '../../domain/repoistories/coffee_api_repository.dart';
 

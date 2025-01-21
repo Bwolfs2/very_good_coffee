@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../domain/model/coffee_image.dart';
 import 'cubits/background_cubit.dart';
 import 'cubits/favorite_count_cubit.dart';
 
@@ -68,25 +67,24 @@ class _HomeBodyState extends State<_HomeBody> {
           const SizedBox(width: 16),
         ],
       ),
-      body:
-          BlocBuilder<BackgroundCubit, CoffeeImage?>(builder: (context, state) {
-        if (state == null) {
-          return const SizedBox.shrink();
-        }
-
-        return Container(
-          decoration: BoxDecoration(
-            color: Colors.black,
-            image: DecorationImage(
-              image: MemoryImage(state.fileEncoded),
-              fit: BoxFit.cover,
-              colorFilter: ColorFilter.mode(
-                Colors.black.withValues(alpha: .6),
-                BlendMode.srcOver,
+      body: BlocBuilder<BackgroundCubit, BackgroundStates>(
+          builder: (context, state) {
+        return switch (state) {
+          BackgroundInitial() || BackgroundError() => const SizedBox.shrink(),
+          BackgroundLoaded() => Container(
+              decoration: BoxDecoration(
+                color: Colors.black,
+                image: DecorationImage(
+                  image: MemoryImage(state.image.fileEncoded),
+                  fit: BoxFit.cover,
+                  colorFilter: ColorFilter.mode(
+                    Colors.black.withValues(alpha: .6),
+                    BlendMode.srcOver,
+                  ),
+                ),
               ),
             ),
-          ),
-        );
+        };
       }),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
