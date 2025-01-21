@@ -40,6 +40,68 @@ class _ImageDetailsPageState extends State<_ImageDetailsPage> {
         title: const Text('Details'),
         centerTitle: true,
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: BlocBuilder<ImageDetailsBloc, ImageDetailsState>(
+        builder: (context, state) {
+          return switch (state) {
+            ImageDetailsInitial() || ImageDetailsLoading() => const Center(
+                child: CircularProgressIndicator(),
+              ),
+            ImageDetailsLoaded(image: final image) ||
+            ImageDetailsSetAsBackground(image: final image) ||
+            ImageDetailsRemoveFromFavorites(image: final image) =>
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  FloatingActionButton(
+                    backgroundColor: Colors.red[200],
+                    tooltip: 'Remove from favorites',
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (dialogContext) => AlertDialog(
+                          title: const Text('Remove from favorites'),
+                          content: const Text('Are you sure?'),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(dialogContext);
+                              },
+                              child: const Text('Cancel'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(dialogContext);
+                                context.read<ImageDetailsBloc>().add(
+                                      ImageDetailsRemoveFromFavoritesEvent(
+                                          image),
+                                    );
+                              },
+                              child: const Text('Remove'),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                    child: const Icon(Icons.close),
+                  ),
+                  const SizedBox(width: 32),
+                  FloatingActionButton(
+                    backgroundColor: Colors.blue[200],
+                    tooltip: 'Set as background',
+                    heroTag: 'set_as_background',
+                    onPressed: () {
+                      context.read<ImageDetailsBloc>().add(
+                            ImageDetailsSetAsBackgroundEvent(image),
+                          );
+                    },
+                    child: const Icon(Icons.photo_camera_back_outlined),
+                  ),
+                ],
+              )
+          };
+        },
+      ),
       body: BlocConsumer<ImageDetailsBloc, ImageDetailsState>(
         listener: (context, state) {
           if (state is ImageDetailsSetAsBackground) {
@@ -50,12 +112,12 @@ class _ImageDetailsPageState extends State<_ImageDetailsPage> {
             );
           }
           if (state is ImageDetailsRemoveFromFavorites) {
-            Navigator.pop(context);
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 content: Text('Removed from favorites'),
               ),
             );
+            Navigator.pop(context);
           }
         },
         builder: (context, state) {
@@ -66,56 +128,12 @@ class _ImageDetailsPageState extends State<_ImageDetailsPage> {
             ImageDetailsLoaded(image: final image) ||
             ImageDetailsSetAsBackground(image: final image) ||
             ImageDetailsRemoveFromFavorites(image: final image) =>
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.all(16.0),
-                      width: MediaQuery.sizeOf(context).width,
-                      child: BlendCardImage(bytecode: image.fileEncoded),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Row(
-                      spacing: 16,
-                      children: [
-                        Expanded(
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.red,
-                              foregroundColor: Colors.white,
-                            ),
-                            onPressed: () {
-                              context.read<ImageDetailsBloc>().add(
-                                    ImageDetailsRemoveFromFavoritesEvent(image),
-                                  );
-                            },
-                            child: FittedBox(
-                                child: const Text('Remove from favorites')),
-                          ),
-                        ),
-                        Expanded(
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blueAccent,
-                              foregroundColor: Colors.white,
-                            ),
-                            onPressed: () {
-                              context.read<ImageDetailsBloc>().add(
-                                    ImageDetailsSetAsBackgroundEvent(image),
-                                  );
-                            },
-                            child: FittedBox(
-                                child: const Text('Set as Background')),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+              Container(
+                padding: const EdgeInsets.all(32.0),
+                width: MediaQuery.sizeOf(context).width,
+                height: MediaQuery.sizeOf(context).height,
+                child: BlendCardImage(bytecode: image.fileEncoded),
+              )
           };
         },
       ),

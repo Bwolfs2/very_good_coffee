@@ -8,7 +8,7 @@ class BlendCardImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PhysicalModel(
-      color: Colors.transparent,
+      color: Colors.white,
       elevation: 8,
       borderRadius: const BorderRadius.all(Radius.circular(10)),
       child: ClipRRect(

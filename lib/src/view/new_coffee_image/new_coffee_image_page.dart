@@ -38,11 +38,64 @@ class _NewCoffeeImageBodyState extends State<_NewCoffeeImageBody> {
       appBar: AppBar(
         title: const Text('New Coffee Image'),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          context.read<NewCoffeeImageBloc>().add(LoadNewCoffeeImageEvent());
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton:
+          BlocBuilder<NewCoffeeImageBloc, NewCoffeeImageState>(
+        builder: (context, state) {
+          return switch (state) {
+            NewCoffeeImageInitial() ||
+            NewCoffeeImageLoading() =>
+              const SizedBox.shrink(),
+            NewCoffeeImageLoaded(image: final image) ||
+            NewCoffeeImageFavorited(image: final image) =>
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Animate(
+                    effects: [
+                      ScaleEffect(
+                        delay: 350.milliseconds,
+                        begin: Offset(0.0, 0.0),
+                        end: Offset(1.0, 1.0),
+                      ),
+                    ],
+                    child: FloatingActionButton(
+                      tooltip: 'Get new coffee image',
+                      onPressed: () {
+                        context
+                            .read<NewCoffeeImageBloc>()
+                            .add(LoadNewCoffeeImageEvent());
+                      },
+                      child: const Icon(Icons.refresh),
+                    ),
+                  ),
+                  const SizedBox(width: 32),
+                  Animate(
+                    effects: [
+                      ScaleEffect(
+                        delay: 350.milliseconds,
+                        begin: Offset(0.0, 0.0),
+                        end: Offset(1.0, 1.0),
+                      ),
+                    ],
+                    child: FloatingActionButton(
+                      heroTag: 'favorite',
+                      tooltip: 'Favorite',
+                      onPressed: () {
+                        context.read<NewCoffeeImageBloc>().add(
+                              FavoriteNewCoffeeImageEvent(image),
+                            );
+                      },
+                      child: const Icon(
+                        Icons.favorite,
+                        color: Colors.red,
+                      ),
+                    ),
+                  ),
+                ],
+              )
+          };
         },
-        child: const Icon(Icons.refresh),
       ),
       body: BlocConsumer<NewCoffeeImageBloc, NewCoffeeImageState>(
         listener: (context, state) {
@@ -62,43 +115,23 @@ class _NewCoffeeImageBodyState extends State<_NewCoffeeImageBody> {
               ),
             NewCoffeeImageLoaded(image: final image) ||
             NewCoffeeImageFavorited(image: final image) =>
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Expanded(
-                    child: Animate(
-                      effects: [
-                        FlipEffect(
-                          delay: 300.milliseconds,
-                          direction: Axis.horizontal,
-                        ),
-                      ],
-                      child: Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: BlendCardImage(
-                          bytecode: image.fileEncoded,
-                        ),
-                      ),
+              SizedBox(
+                width: MediaQuery.sizeOf(context).width,
+                height: MediaQuery.sizeOf(context).height,
+                child: Animate(
+                  effects: [
+                    FlipEffect(
+                      duration: 300.milliseconds,
+                      direction: Axis.horizontal,
+                    ),
+                  ],
+                  child: Padding(
+                    padding: EdgeInsets.all(32.0),
+                    child: BlendCardImage(
+                      bytecode: image.fileEncoded,
                     ),
                   ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Center(
-                          child: FilledButton(
-                            onPressed: () {
-                              context.read<NewCoffeeImageBloc>().add(
-                                    FavoriteNewCoffeeImageEvent(image),
-                                  );
-                            },
-                            child: const Text('Favorite'),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                ],
+                ),
               )
           };
         },
