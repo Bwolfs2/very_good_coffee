@@ -1,5 +1,6 @@
 import 'package:blend/blend.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:very_good_coffee/src/domain/repoistories/coffee_api_repository.dart';
 import 'package:very_good_coffee/src/domain/repoistories/coffee_local_data_repository.dart';
@@ -65,10 +66,18 @@ class _NewCoffeeImageBodyState extends State<_NewCoffeeImageBody> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.all(16.0),
-                      child: BlendCardImage(
-                        bytecode: image.fileEncoded,
+                    child: Animate(
+                      effects: [
+                        FlipEffect(
+                          delay: 300.milliseconds,
+                          direction: Axis.horizontal,
+                        ),
+                      ],
+                      child: Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: BlendCardImage(
+                          bytecode: image.fileEncoded,
+                        ),
                       ),
                     ),
                   ),

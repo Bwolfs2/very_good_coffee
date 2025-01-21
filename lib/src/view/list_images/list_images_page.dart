@@ -80,11 +80,13 @@ class _ListImagesBodyState extends State<_ListImagesBody> {
                       ),
                     );
                   })
-              : Center(
-                  child: SizedBox(
-                    height: 400,
-                    width: MediaQuery.sizeOf(context).width,
-                    child: _PageView(images: images),
+              : ClipRRect(
+                  child: Center(
+                    child: SizedBox(
+                      height: 400,
+                      width: MediaQuery.sizeOf(context).width,
+                      child: _PageView(images: images),
+                    ),
                   ),
                 );
         },
