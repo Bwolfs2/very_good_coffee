@@ -109,6 +109,7 @@ class _ListImagesBodyState extends State<_ListImagesBody> {
   }
 }
 
+///Fix Custom scroll behavior scrolling on desktop.
 class AppScrollBehavior extends MaterialScrollBehavior {
   @override
   Set<PointerDeviceKind> get dragDevices => {
