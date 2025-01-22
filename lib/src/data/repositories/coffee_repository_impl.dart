@@ -16,8 +16,7 @@ class CoffeeApiRepositoryImpl implements CoffeeApiRepository {
 
   @override
   Future<CoffeeImage> getCoffee() async {
-    final response =
-        await _httpClient.get('https://coffee.alexflipnote.dev/random.json');
+    final response = await _httpClient.get(Environment.kApiUrl);
 
     final json = jsonDecode(response.data);
 

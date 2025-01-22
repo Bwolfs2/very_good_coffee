@@ -5,81 +5,34 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "very_good_coffee",
-            "request": "launch",
-            "type": "dart"
-        },
-        {
-            "name": "very_good_coffee (profile mode)",
+            "name": "very_good_coffee (Dev)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "profile"
-        },
+            "flutterMode": "debug",
+            "toolArgs": [                              
+                "--dart-define-from-file",
+                "env/dev.env"
+            ]
+        },   
         {
-            "name": "very_good_coffee (release mode)",
+            "name": "very_good_coffee (Staging)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "release"
-        },
+            "flutterMode": "debug",
+            "toolArgs": [                               
+                "--dart-define-from-file",
+                "env/staging.env"
+            ]
+        },   
         {
-            "name": "blend",
-            "cwd": "packages\\blend",
-            "request": "launch",
-            "type": "dart"
-        },
-        {
-            "name": "blend (profile mode)",
-            "cwd": "packages\\blend",
+            "name": "very_good_coffee (Prod)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "profile"
-        },
-        {
-            "name": "blend (release mode)",
-            "cwd": "packages\\blend",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "release"
-        },
-        {
-            "name": "drift_local_data_impl",
-            "cwd": "packages\\local_data\\drift_local_data_impl",
-            "request": "launch",
-            "type": "dart"
-        },
-        {
-            "name": "drift_local_data_impl (profile mode)",
-            "cwd": "packages\\local_data\\drift_local_data_impl",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "profile"
-        },
-        {
-            "name": "drift_local_data_impl (release mode)",
-            "cwd": "packages\\local_data\\drift_local_data_impl",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "release"
-        },
-        {
-            "name": "local_data_abstractions",
-            "cwd": "packages\\local_data\\local_data_abstractions",
-            "request": "launch",
-            "type": "dart"
-        },
-        {
-            "name": "local_data_abstractions (profile mode)",
-            "cwd": "packages\\local_data\\local_data_abstractions",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "profile"
-        },
-        {
-            "name": "local_data_abstractions (release mode)",
-            "cwd": "packages\\local_data\\local_data_abstractions",
-            "request": "launch",
-            "type": "dart",
-            "flutterMode": "release"
-        }
+            "flutterMode": "debug",
+            "toolArgs": [                             
+                "--dart-define-from-file",
+                "env/prod.env"
+            ]
+        },            
     ]
 }
