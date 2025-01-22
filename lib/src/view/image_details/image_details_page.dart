@@ -1,11 +1,10 @@
 import 'package:blend/blend.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:very_good_coffee/src/domain/model/coffee_image.dart';
 
-import 'bloc/image_details_bloc.dart';
-import 'bloc/image_details_event.dart';
-import 'bloc/image_details_state.dart';
+import '../../domain/model/coffee_image.dart';
+import 'cubit/image_details_cubit.dart';
+import 'cubit/image_details_state.dart';
 
 class ImageDetailsPage extends StatelessWidget {
   final CoffeeImage image;
@@ -19,7 +18,7 @@ class ImageDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
-          ImageDetailsBloc(context.read())..add(ImageDetailsLoadEvent(image)),
+          ImageDetailsBloc(context.read())..loadImageDetails(image),
       child: _ImageDetailsPage(),
     );
   }
@@ -72,9 +71,10 @@ class _ImageDetailsPageState extends State<_ImageDetailsPage> {
                             TextButton(
                               onPressed: () {
                                 Navigator.pop(dialogContext);
-                                context.read<ImageDetailsBloc>().add(
-                                      ImageDetailsRemoveFromFavoritesEvent(
-                                          image),
+                                context
+                                    .read<ImageDetailsBloc>()
+                                    .removeFromFavorites(
+                                      image,
                                     );
                               },
                               child: const Text('Remove'),
@@ -91,9 +91,7 @@ class _ImageDetailsPageState extends State<_ImageDetailsPage> {
                     tooltip: 'Set as background',
                     heroTag: 'set_as_background',
                     onPressed: () {
-                      context.read<ImageDetailsBloc>().add(
-                            ImageDetailsSetAsBackgroundEvent(image),
-                          );
+                      context.read<ImageDetailsBloc>().setAsBackground(image);
                     },
                     child: const Icon(Icons.photo_camera_back_outlined),
                   ),

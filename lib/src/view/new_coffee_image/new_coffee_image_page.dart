@@ -4,10 +4,9 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:very_good_coffee/src/domain/repositories/coffee_api_repository.dart';
 import 'package:very_good_coffee/src/domain/repositories/coffee_local_data_repository.dart';
-import 'package:very_good_coffee/src/view/new_coffee_image/bloc/new_coffee_image_bloc.dart';
-import 'package:very_good_coffee/src/view/new_coffee_image/bloc/new_coffee_image_events.dart';
+import 'package:very_good_coffee/src/view/new_coffee_image/cubit/new_coffee_image_cubit.dart';
 
-import 'bloc/new_coffee_image_states.dart';
+import 'cubit/new_coffee_image_states.dart';
 
 class NewCoffeeImagePage extends StatelessWidget {
   const NewCoffeeImagePage({super.key});
@@ -18,7 +17,7 @@ class NewCoffeeImagePage extends StatelessWidget {
       create: (context) => NewCoffeeImageBloc(
         context.read<CoffeeApiRepository>(),
         context.read<CoffeeLocalDataRepository>(),
-      )..add(LoadNewCoffeeImageEvent()),
+      )..loadNewCoffeeImage(),
       child: const _NewCoffeeImageBody(),
     );
   }
@@ -62,9 +61,7 @@ class _NewCoffeeImageBodyState extends State<_NewCoffeeImageBody> {
                   child: FloatingActionButton(
                     tooltip: 'Get new coffee image',
                     onPressed: () {
-                      context
-                          .read<NewCoffeeImageBloc>()
-                          .add(LoadNewCoffeeImageEvent());
+                      context.read<NewCoffeeImageBloc>().loadNewCoffeeImage();
                     },
                     child: const Icon(Icons.refresh),
                   ),
@@ -82,8 +79,8 @@ class _NewCoffeeImageBodyState extends State<_NewCoffeeImageBody> {
                     heroTag: 'favorite',
                     tooltip: 'Favorite',
                     onPressed: () {
-                      context.read<NewCoffeeImageBloc>().add(
-                            FavoriteNewCoffeeImageEvent(state.image),
+                      context.read<NewCoffeeImageBloc>().favoriteNewCoffeeImage(
+                            state.image,
                           );
                     },
                     child: const Icon(
