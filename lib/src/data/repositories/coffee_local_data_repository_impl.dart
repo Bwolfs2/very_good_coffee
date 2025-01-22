@@ -3,7 +3,7 @@ import 'package:local_data_abstractions/local_data_abstractions.dart';
 import 'package:very_good_coffee/src/domain/model/coffee_image.dart';
 
 import '../../domain/failures/failures.dart';
-import '../../domain/repoistories/coffee_local_data_repository.dart';
+import '../../domain/repositories/coffee_local_data_repository.dart';
 
 class CoffeeLocalDataRepositoryImpl extends CoffeeLocalDataRepository {
   final CoffeeLocalDataSource _coffeeDataSource;

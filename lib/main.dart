@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:local_data_abstractions/local_data_abstractions.dart';
-import 'package:very_good_coffee/src/domain/repoistories/coffee_local_data_repository.dart';
+import 'package:very_good_coffee/src/domain/repositories/coffee_local_data_repository.dart';
 import 'package:very_good_coffee/src/view/list_images/list_images_page.dart';
 import 'package:very_good_coffee/src/view/splash/splash_page.dart';
 
 import 'src/data/repositories/coffee_local_data_repository_impl.dart';
 import 'src/data/repositories/coffee_repository_impl.dart';
 import 'src/domain/model/coffee_image.dart';
-import 'src/domain/repoistories/coffee_api_repository.dart';
+import 'src/domain/repositories/coffee_api_repository.dart';
 import 'src/view/home/home_page.dart';
 import 'src/view/image_details/image_details_page.dart';
 import 'src/view/new_coffee_image/new_coffee_image_page.dart';

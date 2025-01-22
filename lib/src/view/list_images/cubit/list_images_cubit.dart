@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../domain/repoistories/coffee_local_data_repository.dart';
+import '../../../domain/repositories/coffee_local_data_repository.dart';
 import 'list_images_states.dart';
 
 class ListImagesCubit extends Cubit<ListImagesStates> {

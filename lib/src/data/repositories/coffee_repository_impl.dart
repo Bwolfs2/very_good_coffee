@@ -6,7 +6,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../domain/failures/failures.dart';
 import '../../domain/model/coffee_image.dart';
-import '../../domain/repoistories/coffee_api_repository.dart';
+import '../../domain/repositories/coffee_api_repository.dart';
 
 class CoffeeApiRepositoryImpl implements CoffeeApiRepository {
   final IHttpClient _httpClient;

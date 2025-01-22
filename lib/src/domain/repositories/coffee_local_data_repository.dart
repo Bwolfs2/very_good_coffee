@@ -9,6 +9,5 @@ abstract class CoffeeLocalDataRepository {
   Future<Result<Failure, void>> saveFavoriteCoffee(CoffeeImage coffee);
   Future<Result<Failure, List<CoffeeImage>>> getAllFavoritedCoffee();
   Future<Result<Failure, void>> deleteFavoriteCoffee(CoffeeImage coffee);
-
   Future<Result<Failure, int>> getFavoriteCoffeeCount();
 }

@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../domain/repoistories/coffee_local_data_repository.dart';
+import '../../../domain/repositories/coffee_local_data_repository.dart';
 import 'image_details_event.dart';
 import 'image_details_state.dart';
 

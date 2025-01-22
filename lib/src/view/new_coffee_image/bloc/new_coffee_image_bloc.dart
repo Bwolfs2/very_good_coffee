@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:very_good_coffee/src/domain/repoistories/coffee_api_repository.dart';
-import 'package:very_good_coffee/src/domain/repoistories/coffee_local_data_repository.dart';
+import 'package:very_good_coffee/src/domain/repositories/coffee_api_repository.dart';
+import 'package:very_good_coffee/src/domain/repositories/coffee_local_data_repository.dart';
 
 import 'new_coffee_image_events.dart';
 import 'new_coffee_image_states.dart';

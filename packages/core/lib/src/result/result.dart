@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 abstract class Result<TError, TSuccess> {
   /// Constructs a new [Result] instance.
   const Result();
@@ -10,12 +12,13 @@ abstract class Result<TError, TSuccess> {
 
   /// Returns the success value if the result is a success,
   /// otherwise calls [orElse] with the error value and returns its result.
-  TSuccess getOrElse(TSuccess Function(TError error) orElse);
+  @visibleForTesting
+  TSuccess getSuccess() => fold((e) => throw Exception('No success'), (r) => r);
 
-  /// Maps the result to a new type using the provided function.
-  Result<TError, T> map<T>(T Function(TSuccess r) fn) {
-    return fold((e) => Error(e), (r) => Success(fn(r)));
-  }
+  /// Returns the error value if the result is an error,
+  /// otherwise throws an exception.
+  @visibleForTesting
+  TError getError() => fold((e) => e, (r) => throw Exception('No error'));
 
   /// Factory constructor to create a success result.
   factory Result.success(TSuccess value) => Success(value);
@@ -36,11 +39,6 @@ class Error<TError, TSuccess> extends Result<TError, TSuccess> {
   T fold<T>(T Function(TError l) onError, T Function(TSuccess r) onSuccess) {
     return onError(_value);
   }
-
-  @override
-  TSuccess getOrElse(TSuccess Function(TError error) orElse) {
-    return orElse(_value);
-  }
 }
 
 class Success<TError, TSuccess> extends Result<TError, TSuccess> {
@@ -54,11 +52,6 @@ class Success<TError, TSuccess> extends Result<TError, TSuccess> {
   T fold<T>(
       T Function(TError error) onError, T Function(TSuccess r) onSuccess) {
     return onSuccess(_value);
-  }
-
-  @override
-  TSuccess getOrElse(TSuccess Function(TError error) orElse) {
-    return _value;
   }
 }
 

@@ -2,8 +2,8 @@ import 'package:blend/blend.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:very_good_coffee/src/domain/repoistories/coffee_api_repository.dart';
-import 'package:very_good_coffee/src/domain/repoistories/coffee_local_data_repository.dart';
+import 'package:very_good_coffee/src/domain/repositories/coffee_api_repository.dart';
+import 'package:very_good_coffee/src/domain/repositories/coffee_local_data_repository.dart';
 import 'package:very_good_coffee/src/view/new_coffee_image/bloc/new_coffee_image_bloc.dart';
 import 'package:very_good_coffee/src/view/new_coffee_image/bloc/new_coffee_image_events.dart';
 
