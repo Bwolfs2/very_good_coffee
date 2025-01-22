@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:very_good_coffee/src/domain/model/coffee_image.dart';
 import 'package:very_good_coffee/src/view/list_images/cubit/list_images_cubit.dart';
 
+import 'cubit/list_images_states.dart';
+
 class ListImagesPage extends StatelessWidget {
   const ListImagesPage({super.key});
 
@@ -45,19 +47,29 @@ class _ListImagesBodyState extends State<_ListImagesBody> {
             ? const Icon(Icons.width_full_outlined)
             : const Icon(Icons.grid_view),
       ),
-      body: BlocBuilder<ListImagesCubit, List<CoffeeImage>?>(
-        builder: (context, images) {
-          if (images == null) {
-            return const Center(child: CircularProgressIndicator());
+      body: BlocConsumer<ListImagesCubit, ListImagesStates>(
+        listener: (context, state) {
+          if (state is ListImagesError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: Colors.red[100],
+              ),
+            );
           }
-
-          if (images.isEmpty) {
-            return const Center(child: Text('No images found'));
-          }
-
-          return isGridView
-              ? GridView.builder(
-                  itemCount: images.length,
+        },
+        builder: (context, state) {
+          return switch (state) {
+            ListImagesInitial() =>
+              const Center(child: CircularProgressIndicator()),
+            ListImagesError() => Center(child: Text(state.message)),
+            ListImagesLoaded(coffeeImages: final coffeeImages)
+                when coffeeImages.isEmpty =>
+              const Center(child: Text('No images found')),
+            ListImagesLoaded(coffeeImages: final coffeeImages)
+                when isGridView =>
+              GridView.builder(
+                  itemCount: coffeeImages.length,
                   padding: const EdgeInsets.symmetric(
                       horizontal: 16.0, vertical: 48.0),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -72,23 +84,25 @@ class _ListImagesBodyState extends State<_ListImagesBody> {
                         Navigator.pushNamed(
                           context,
                           '/image_details',
-                          arguments: images[index],
+                          arguments: coffeeImages[index],
                         );
                       },
                       child: BlendCardImage(
-                        bytecode: images[index % images.length].fileEncoded,
+                        bytecode: coffeeImages[index % coffeeImages.length]
+                            .fileEncoded,
                       ),
                     );
-                  })
-              : ClipRRect(
-                  child: Center(
-                    child: SizedBox(
-                      height: 400,
-                      width: MediaQuery.sizeOf(context).width,
-                      child: _PageView(images: images),
-                    ),
+                  }),
+            ListImagesLoaded(coffeeImages: final coffeeImages) => ClipRRect(
+                child: Center(
+                  child: SizedBox(
+                    height: 400,
+                    width: MediaQuery.sizeOf(context).width,
+                    child: _PageView(images: coffeeImages),
                   ),
-                );
+                ),
+              ),
+          };
         },
       ),
     );

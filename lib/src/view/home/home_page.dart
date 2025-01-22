@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'cubits/background_cubit.dart';
-import 'cubits/favorite_count_cubit.dart';
+import 'cubits/background/background_cubit.dart';
+import 'cubits/background/background_states.dart';
+import 'cubits/favorite_count/favorite_count_cubit.dart';
+import 'cubits/favorite_count/favorite_count_states.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -45,23 +47,34 @@ class _HomeBodyState extends State<_HomeBody> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
-          BlocBuilder<FavoriteCountCubit, int?>(
+          BlocConsumer<FavoriteCountCubit, FavoriteCountStates>(
+            listener: (context, state) {
+              if (state is FavoriteCountError) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(state.message),
+                    backgroundColor: Colors.red[100],
+                  ),
+                );
+              }
+            },
             builder: (context, state) {
-              return IconButton(
-                onPressed: () async {
-                  await Navigator.pushNamed(context, '/list_images');
-                  if (context.mounted) {
-                    context.read<BackgroundCubit>().loadBackground();
-                    context.read<FavoriteCountCubit>().getFavoriteCount();
-                  }
-                },
-                icon: state != null
-                    ? Badge.count(
-                        count: state,
-                        child: const Icon(Icons.menu, color: Colors.white),
-                      )
-                    : const Icon(Icons.menu, color: Colors.white),
-              );
+              if (state is FavoriteCountLoaded) {
+                return IconButton(
+                  onPressed: () async {
+                    await Navigator.pushNamed(context, '/list_images');
+                    if (context.mounted) {
+                      context.read<BackgroundCubit>().loadBackground();
+                      context.read<FavoriteCountCubit>().getFavoriteCount();
+                    }
+                  },
+                  icon: Badge.count(
+                    count: state.count,
+                    child: const Icon(Icons.menu, color: Colors.white),
+                  ),
+                );
+              }
+              return const SizedBox.shrink();
             },
           ),
           const SizedBox(width: 16),

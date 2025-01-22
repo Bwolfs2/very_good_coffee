@@ -21,7 +21,10 @@ class _SplashPageState extends State<SplashPage> {
     await Future.delayed(const Duration(seconds: 1));
 
     if (mounted) {
+      ///Remove the splash screen
       FlutterNativeSplash.remove();
+
+      ///Navigate to the home page
       await Navigator.pushReplacementNamed(context, '/home');
     }
   }

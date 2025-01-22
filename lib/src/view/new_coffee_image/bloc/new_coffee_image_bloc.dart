@@ -15,7 +15,10 @@ class NewCoffeeImageBloc
     on<LoadNewCoffeeImageEvent>((event, emit) async {
       emit(NewCoffeeImageLoading());
       final image = await _coffeeImageRepository.getCoffee();
-      emit(NewCoffeeImageLoaded(image));
+      image.fold(
+        (failure) => emit(NewCoffeeImageError(failure.message)),
+        (image) => emit(NewCoffeeImageLoaded(image)),
+      );
     });
 
     on<FavoriteNewCoffeeImageEvent>((event, emit) async {

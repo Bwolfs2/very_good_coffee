@@ -1,11 +1,14 @@
+import 'package:core/core.dart';
 import 'package:very_good_coffee/src/domain/model/coffee_image.dart';
 
-abstract class CoffeeLocalDataRepository {
-  Future<CoffeeImage> getBackgroundCoffee();
-  Future<void> setBackgroundCoffee(CoffeeImage coffee);
-  Future<void> saveFavoriteCoffee(CoffeeImage coffee);
-  Future<List<CoffeeImage>> getAllFavoritedCoffee();
-  Future<void> deleteFavoriteCoffee(CoffeeImage coffee);
+import '../failures/failures.dart';
 
-  Future<int> getFavoriteCoffeeCount();
+abstract class CoffeeLocalDataRepository {
+  Future<Result<Failure, CoffeeImage>> getBackgroundCoffee();
+  Future<Result<Failure, void>> setBackgroundCoffee(CoffeeImage coffee);
+  Future<Result<Failure, void>> saveFavoriteCoffee(CoffeeImage coffee);
+  Future<Result<Failure, List<CoffeeImage>>> getAllFavoritedCoffee();
+  Future<Result<Failure, void>> deleteFavoriteCoffee(CoffeeImage coffee);
+
+  Future<Result<Failure, int>> getFavoriteCoffeeCount();
 }

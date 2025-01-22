@@ -21,3 +21,9 @@ class NewCoffeeImageLoaded extends NewCoffeeImageState {
 class NewCoffeeImageFavorited extends NewCoffeeImageState {
   const NewCoffeeImageFavorited();
 }
+
+class NewCoffeeImageError extends NewCoffeeImageState {
+  final String message;
+
+  const NewCoffeeImageError(this.message);
+}

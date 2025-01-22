@@ -1,3 +1,4 @@
+import 'package:core/core.dart';
 import 'package:local_data_abstractions/local_data_abstractions.dart';
 import 'package:very_good_coffee/src/domain/model/coffee_image.dart';
 
@@ -10,19 +11,21 @@ class CoffeeLocalDataRepositoryImpl extends CoffeeLocalDataRepository {
   CoffeeLocalDataRepositoryImpl(this._coffeeDataSource);
 
   @override
-  Future<List<CoffeeImage>> getAllFavoritedCoffee() async {
+  Future<Result<Failure, List<CoffeeImage>>> getAllFavoritedCoffee() async {
     try {
       final coffeeImages = await _coffeeDataSource.getAllFavoritedCoffee();
-      return coffeeImages
-          .map((e) => CoffeeImage(id: e.id, fileEncoded: e.fileEncoded))
-          .toList();
+      return Result.success(
+        coffeeImages
+            .map((e) => CoffeeImage(id: e.id, fileEncoded: e.fileEncoded))
+            .toList(),
+      );
     } catch (e) {
-      throw NoFavoriteCoffeeException();
+      return Result.error(NoFavoriteCoffeeException());
     }
   }
 
   @override
-  Future<void> deleteFavoriteCoffee(CoffeeImage coffee) async {
+  Future<Result<Failure, void>> deleteFavoriteCoffee(CoffeeImage coffee) async {
     try {
       await _coffeeDataSource.deleteFavoriteCoffee(
         CoffeeImageDto(
@@ -30,13 +33,14 @@ class CoffeeLocalDataRepositoryImpl extends CoffeeLocalDataRepository {
           fileEncoded: coffee.fileEncoded,
         ),
       );
+      return Result.success(null);
     } catch (e) {
-      throw FailedToDeleteFavoriteCoffeeException();
+      return Result.error(FailedToDeleteFavoriteCoffeeException());
     }
   }
 
   @override
-  Future<void> saveFavoriteCoffee(CoffeeImage coffee) async {
+  Future<Result<Failure, void>> saveFavoriteCoffee(CoffeeImage coffee) async {
     try {
       await _coffeeDataSource.insertFavoriteCoffee(
         CoffeeImageDto(
@@ -44,33 +48,38 @@ class CoffeeLocalDataRepositoryImpl extends CoffeeLocalDataRepository {
           fileEncoded: coffee.fileEncoded,
         ),
       );
+      return Result.success(null);
     } catch (e) {
-      throw FailedToSaveFavoriteCoffeeException();
+      return Result.error(FailedToSaveFavoriteCoffeeException());
     }
   }
 
   @override
-  Future<int> getFavoriteCoffeeCount() async {
+  Future<Result<Failure, int>> getFavoriteCoffeeCount() async {
     try {
-      return await _coffeeDataSource.getFavoriteCoffeeCount();
+      return Result.success(await _coffeeDataSource.getFavoriteCoffeeCount());
     } catch (e) {
-      throw NoFavoriteCoffeeCountException();
+      return Result.error(NoFavoriteCoffeeCountException());
     }
   }
 
   @override
-  Future<CoffeeImage> getBackgroundCoffee() async {
+  Future<Result<Failure, CoffeeImage>> getBackgroundCoffee() async {
     try {
       final coffeeImage = await _coffeeDataSource.getBackgroundCoffee();
-      return CoffeeImage(
-          id: coffeeImage.id, fileEncoded: coffeeImage.fileEncoded);
+      return Result.success(
+        CoffeeImage(
+          id: coffeeImage.id,
+          fileEncoded: coffeeImage.fileEncoded,
+        ),
+      );
     } catch (e) {
-      throw NoBackgroundCoffeeException();
+      return Result.error(NoBackgroundCoffeeException());
     }
   }
 
   @override
-  Future<void> setBackgroundCoffee(CoffeeImage coffee) async {
+  Future<Result<Failure, void>> setBackgroundCoffee(CoffeeImage coffee) async {
     try {
       await _coffeeDataSource.setBackgroundCoffee(
         CoffeeImageDto(
@@ -78,8 +87,9 @@ class CoffeeLocalDataRepositoryImpl extends CoffeeLocalDataRepository {
           fileEncoded: coffee.fileEncoded,
         ),
       );
+      return Result.success(null);
     } catch (e) {
-      throw NoBackgroundCoffeeException();
+      return Result.error(NoBackgroundCoffeeException());
     }
   }
 }
